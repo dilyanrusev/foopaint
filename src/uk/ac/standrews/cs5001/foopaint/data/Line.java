@@ -7,6 +7,7 @@ public class Line extends VectorShape {
 	private int yEnd;
 	
 	public Line(Line other) {
+		super(other);
 		this.xOrigin = other.xOrigin;
 		this.yOrigin = other.yOrigin;
 		this.xEnd = other.xEnd;

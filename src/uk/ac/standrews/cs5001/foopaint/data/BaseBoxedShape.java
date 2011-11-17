@@ -14,6 +14,7 @@ public abstract class BaseBoxedShape extends VectorShape {
 	}
 	
 	public BaseBoxedShape(BaseBoxedShape other) {
+		super(other);
 		this.x = other.x;
 		this.y = other.y;
 		this.width = other.width;

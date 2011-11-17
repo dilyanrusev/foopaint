@@ -7,6 +7,10 @@ public class VectorShape extends DrawableItem {
 		this.brush = new BrushData();
 	}
 	
+	public VectorShape(VectorShape other) {
+		this.brush = new BrushData(other.brush);
+	}
+	
 	public BrushData getBrush() {
 		return this.brush;
 	}

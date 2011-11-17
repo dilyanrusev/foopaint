@@ -10,6 +10,7 @@ import java.awt.geom.Point2D;
 import java.util.Observable;
 import java.util.Observer;
 
+import javax.swing.JColorChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
@@ -119,8 +120,10 @@ public class DrawingPanel extends JPanel {
 	
 	void onToolChanged(ToolIDs newTool) {
 		switch (newTool) {
-		case DRAW_IMPORTED_IMAGE:
 		case PICK_COLOUR:
+			this.colour = JColorChooser.showDialog(this, "Pick a colour", this.colour);
+			break;
+		case DRAW_IMPORTED_IMAGE:		
 		case SELECT_OBJECT:
 			JOptionPane.showMessageDialog(this, "Not implemented: " + newTool);
 			break;

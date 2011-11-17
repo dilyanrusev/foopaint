@@ -7,10 +7,18 @@ public class BrushData {
 	boolean solid;
 	
 	public BrushData() {
-		this.r = 0;
-		this.g = 0;
-		this.b = 0;
-		this.solid = false;
+		this(0, 0, 0, false);
+	}
+	
+	public BrushData(int r, int g, int b, boolean solid) {
+		this.r = r;
+		this.g = g;
+		this.b = b;
+		this.solid = solid;
+	}
+	
+	public BrushData(BrushData other) {
+		this(other.r, other.g, other.b, other.solid);
 	}
 	
 	public boolean isSolid() {
