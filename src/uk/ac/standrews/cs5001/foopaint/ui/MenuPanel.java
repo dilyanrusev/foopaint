@@ -6,7 +6,6 @@ import java.util.Observer;
 
 import javax.swing.*;
 
-import uk.ac.standrews.cs5001.foopaint.ui.draw.ActionIDs;
 
 public class MenuPanel extends JToolBar implements ActionListener {
 		

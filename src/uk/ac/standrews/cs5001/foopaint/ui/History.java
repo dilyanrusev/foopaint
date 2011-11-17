@@ -1,10 +1,10 @@
-package uk.ac.standrews.cs5001.foopaint.ui.draw;
+package uk.ac.standrews.cs5001.foopaint.ui;
 
 import java.util.LinkedList;
 import java.util.Observer;
 import java.util.Queue;
 
-import uk.ac.standrews.cs5001.foopaint.ui.ValueChangedEvent;
+import uk.ac.standrews.cs5001.foopaint.ui.tools.Tool;
 
 public class History {
 	private static History singleton;

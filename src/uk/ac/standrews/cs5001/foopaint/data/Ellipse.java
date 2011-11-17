@@ -5,7 +5,7 @@ public class Ellipse extends BaseBoxedShape {
 		super(x, y ,width, height);
 	}
 	
-	public Ellipse(Rectangle other) {
+	public Ellipse(Ellipse other) {
 		super(other);
 	}
 }

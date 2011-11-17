@@ -1,4 +1,4 @@
-package uk.ac.standrews.cs5001.foopaint.ui.draw;
+package uk.ac.standrews.cs5001.foopaint.ui;
 
 public enum ToolIDs {
 	SELECT_OBJECT,

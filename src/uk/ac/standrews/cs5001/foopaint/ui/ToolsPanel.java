@@ -6,7 +6,6 @@ import java.util.Observer;
 
 import javax.swing.*;
 
-import uk.ac.standrews.cs5001.foopaint.ui.draw.ToolIDs;
 
 public class ToolsPanel extends JToolBar implements ActionListener {
 	private static final long serialVersionUID = 1L;

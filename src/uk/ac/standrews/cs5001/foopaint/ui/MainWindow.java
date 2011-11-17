@@ -8,8 +8,6 @@ import java.util.Observer;
 
 import javax.swing.*;
 
-import uk.ac.standrews.cs5001.foopaint.ui.draw.ActionIDs;
-import uk.ac.standrews.cs5001.foopaint.ui.draw.History;
 
 public class MainWindow extends JFrame {
 	private static final long serialVersionUID = 1L;
