@@ -1,0 +1,12 @@
+package uk.ac.standrews.cs5001.foopaint.ui.draw;
+
+public enum ToolIDs {
+	SELECT_OBJECT,
+	PICK_COLOUR,
+	DRAW_ELLIPSE,
+	DRAW_SOLID_ELLIPSE,
+	DRAW_RECTANGLE,
+	DRAW_SOLID_RECTANGLE,
+	DRAW_LINE,
+	DRAW_IMPORTED_IMAGE
+}
