@@ -20,6 +20,7 @@ import uk.ac.standrews.cs5001.foopaint.ui.tools.ToolFactory;
 public class DrawingPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 	
+	private Iterable<Tool> archivedTools;
 	private Tool currentTool;
 	private ToolChangeHandler toolChangeHandler;
 	private Point2D start;
@@ -44,7 +45,7 @@ public class DrawingPanel extends JPanel {
 		this.dragging = false;
 		this.currentTool = null;
 		
-		History.get().addQueueChangedListener(new HistoryChangedHandler(this));
+		History.get().addHistoryChangedListener(new HistoryChangedHandler(this));
 	}
 	
 	public Observer getToolChangeHandler() {
@@ -109,9 +110,11 @@ public class DrawingPanel extends JPanel {
 		g.setColor(Color.WHITE);
 		g.fillRect(0, 0, this.getWidth(), this.getHeight());
 		
-		for (Tool archived: History.get().getItems()) {
-			archived.render(g);
-		}
+		if (this.archivedTools != null) {
+			for (Tool archived: this.archivedTools) {
+				archived.render(g);
+			}
+		}		
 		
 		if (this.currentTool != null && this.dragging) {			
 			this.currentTool.render(g);
@@ -135,7 +138,9 @@ public class DrawingPanel extends JPanel {
 		}		
 	}
 	
-	void onHistoryChanged(Iterable<Tool> arg1) {
+	void onHistoryChanged(Iterable<Tool> arg1) {		
+		//JOptionPane.showMessageDialog(this, "History changed");
+		this.archivedTools = arg1;
 		this.repaint();
 	}
 	
@@ -167,7 +172,5 @@ public class DrawingPanel extends JPanel {
 		public void update(Observable arg0, Object arg1) {
 			this.parent.onHistoryChanged((Iterable<Tool>)arg1);
 		}
-	}
-
-	
+	}	
 }

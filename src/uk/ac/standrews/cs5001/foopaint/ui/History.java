@@ -3,65 +3,62 @@ package uk.ac.standrews.cs5001.foopaint.ui;
 import java.util.LinkedList;
 import java.util.Observer;
 import java.util.Queue;
+import java.util.Stack;
 
 import uk.ac.standrews.cs5001.foopaint.ui.tools.Tool;
 
 public class History {
 	private static History singleton;
 	
-	private Queue<Tool> itemsToDraw;	
-	private Queue<Tool> undoneItems;
-	private ValueChangedEvent<Iterable<Tool>> queueChangedEvent;
+	private Stack<Tool> itemsToDraw;	
+	private Stack<Tool> undoneItems;
+	private ValueChangedEvent<Iterable<Tool>> historyChangedEvent;
 	
 	static {
 		singleton = new History();
 	}
 	
 	private History() {
-		this.itemsToDraw = new LinkedList<Tool>();
-		this.undoneItems = new LinkedList<Tool>();
-		this.queueChangedEvent = new ValueChangedEvent<Iterable<Tool>>();
+		this.itemsToDraw = new Stack<Tool>();
+		this.undoneItems = new Stack<Tool>();
+		this.historyChangedEvent = new ValueChangedEvent<Iterable<Tool>>();
 	}
 	
 	public static History get() {
 		return singleton;
 	}
 	
-	public void addQueueChangedListener(Observer listener) {
-		this.queueChangedEvent.addObserver(listener);
+	public void addHistoryChangedListener(Observer listener) {
+		this.historyChangedEvent.addObserver(listener);
 	}
 	
-	private void raiseQueueChanged() {
-		this.queueChangedEvent.notifyObservers(this.getItems());
+	private void raiseHistoryChanged() {
+		this.historyChangedEvent.raiseEvent(this.getItems());		
 	}
 	
 	public void addItem(Tool tool) {
 		this.itemsToDraw.add(tool);
-		this.raiseQueueChanged();
+		this.raiseHistoryChanged();
 	}
 	
 	public boolean undo() {
-		Tool last = this.itemsToDraw.poll();
-		if (last != null) {
-			this.undoneItems.add(last);
-			this.raiseQueueChanged();
+		if (!this.itemsToDraw.empty()) {
+			Tool last = this.itemsToDraw.pop();
+			this.undoneItems.push(last);
+			this.raiseHistoryChanged();
 			return true;
 		}
-		else {
-			return false;
-		}
+		return false;
 	}
 	
 	public boolean redo() {
-		Tool last = this.undoneItems.poll();
-		if (last != null) {
-			this.itemsToDraw.add(last);
-			this.raiseQueueChanged();
+		if (!this.undoneItems.empty()) {
+			Tool last = this.undoneItems.pop();
+			this.itemsToDraw.push(last);
+			this.raiseHistoryChanged();
 			return true;
 		}
-		else {
-			return false;
-		}
+		return false;
 	}
 	
 	public Iterable<Tool> getItems() {
