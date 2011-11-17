@@ -1,6 +1,11 @@
 package uk.ac.standrews.cs5001.foopaint.data;
 
+//import java.io.IOException;
+//import java.io.ObjectStreamException;
+
 public abstract class BaseBoxedShape extends VectorShape {
+	private static final long serialVersionUID = 1L;
+	
 	private int x;
 	private int y;
 	private int width;
@@ -52,4 +57,23 @@ public abstract class BaseBoxedShape extends VectorShape {
 	public int getHeight() {
 		return this.height;
 	}
+	
+//	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
+//		out.writeInt(this.x);
+//		out.writeInt(this.y);
+//		out.writeInt(this.width);
+//		out.writeInt(this.height);
+//	}
+//		
+//	private void readObject(java.io.ObjectInputStream in)  throws IOException, ClassNotFoundException {
+//		this.x = in.readInt();
+//		this.y = in.readInt();
+//		this.width = in.readInt();
+//		this.height = in.readInt();
+//	}
+//		
+//	
+//	private void readObjectNoData() throws ObjectStreamException {
+//		
+//	}
 }

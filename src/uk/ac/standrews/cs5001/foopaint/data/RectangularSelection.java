@@ -1,6 +1,10 @@
 package uk.ac.standrews.cs5001.foopaint.data;
 
-public class RectangularSelection implements Selection {
+import java.io.Serializable;
+
+public class RectangularSelection implements Selection, Serializable {
+	private static final long serialVersionUID = 1L;
+	
 	private int x;
 	private int y;
 	private int w;

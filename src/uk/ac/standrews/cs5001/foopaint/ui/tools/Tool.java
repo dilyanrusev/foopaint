@@ -11,7 +11,8 @@ import uk.ac.standrews.cs5001.foopaint.data.Rectangle;
 import uk.ac.standrews.cs5001.foopaint.data.VectorShape;
 
 public interface Tool {
-	void update(Point2D start, Point2D end, Color color);	
+	void update(Point2D start, Point2D end, Color color);
+	void update(DrawableItem drawable);
 	void render(Graphics grfx);
 	DrawableItem getItem();
 	Tool copy();
@@ -28,6 +29,12 @@ class LineTool implements Tool {
 		int y2 = (int) end.getY();
 		this.data = new Line(x1, y1, x2, y2);
 		this.data.setBrush(Convert.colourToBrush(color, true));
+	}
+	
+	@Override
+	public void update(DrawableItem drawable) {
+		Line another = (Line) drawable;
+		this.data = new Line(another);
 	}
 
 	@Override
@@ -125,6 +132,12 @@ class RectangleTool extends BaseBoxTool<Rectangle> {
 	protected Rectangle createDataItem(int x, int y, int w, int h) {
 		return new Rectangle(x, y, w, h);
 	}
+	
+	@Override
+	public void update(DrawableItem drawable) {
+		Rectangle another = (Rectangle) drawable;
+		this.setData(new Rectangle(another));	
+	}
 		
 }
 
@@ -152,6 +165,12 @@ class SolidRectangleTool extends BaseBoxTool<Rectangle> {
 		return new Rectangle(x, y, w, h);
 	}
 	
+	@Override
+	public void update(DrawableItem drawable) {
+		Rectangle another = (Rectangle) drawable;
+		this.setData(new Rectangle(another));	
+	}
+	
 }
 
 class EllipseTool extends BaseBoxTool<Ellipse> {
@@ -176,6 +195,12 @@ class EllipseTool extends BaseBoxTool<Ellipse> {
 	@Override
 	protected Ellipse createDataItem(int x, int y, int w, int h) {
 		return new Ellipse(x, y, w, h);
+	}
+	
+	@Override
+	public void update(DrawableItem drawable) {
+		Ellipse another = (Ellipse) drawable;
+		this.setData(new Ellipse(another));	
 	}
 		
 }
@@ -204,4 +229,10 @@ class SolidEllipseTool extends BaseBoxTool<Ellipse> {
 		return new Ellipse(x, y, w, h);
 	}
 		
+	@Override
+	public void update(DrawableItem drawable) {
+		Ellipse another = (Ellipse) drawable;
+		this.setData(new Ellipse(another));	
+	}
+	
 }

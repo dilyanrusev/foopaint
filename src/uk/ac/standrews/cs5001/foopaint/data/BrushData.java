@@ -1,6 +1,10 @@
 package uk.ac.standrews.cs5001.foopaint.data;
 
-public class BrushData {
+import java.io.Serializable;
+
+public class BrushData implements Serializable {
+	private static final long serialVersionUID = 1L;
+	
 	int r;
 	int g;
 	int b;

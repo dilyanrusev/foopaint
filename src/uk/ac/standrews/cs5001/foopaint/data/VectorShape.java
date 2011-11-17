@@ -1,6 +1,10 @@
 package uk.ac.standrews.cs5001.foopaint.data;
 
-public class VectorShape extends DrawableItem {
+import java.io.Serializable;
+
+public class VectorShape extends DrawableItem implements Serializable {
+	private static final long serialVersionUID = 1L;
+	
 	private BrushData brush;
 	
 	public VectorShape() {

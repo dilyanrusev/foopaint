@@ -1,6 +1,10 @@
 package uk.ac.standrews.cs5001.foopaint.data;
 
-public class Line extends VectorShape {
+import java.io.Serializable;
+
+public class Line extends VectorShape implements Serializable {
+	private static final long serialVersionUID = 1L;
+	
 	private int xOrigin;
 	private int yOrigin;
 	private int xEnd;

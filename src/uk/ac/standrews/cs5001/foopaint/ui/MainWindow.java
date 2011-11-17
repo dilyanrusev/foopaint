@@ -3,18 +3,24 @@ package uk.ac.standrews.cs5001.foopaint.ui;
 import java.awt.BorderLayout;
 import java.awt.Toolkit;
 import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
 
 import javax.swing.*;
 
+import uk.ac.standrews.cs5001.foopaint.data.Document;
+
 
 public class MainWindow extends JFrame {
 	private static final long serialVersionUID = 1L;
+	private JFileChooser fileChooser;
+	private String lastFileName;
 
 	public MainWindow() {
-		this.buildLayout();
-		
+		this.fileChooser = new JFileChooser(new File(System.getProperty("user.home")));
+		this.buildLayout();		
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setTitle("Foo Paint");
 		this.setIconImage(Toolkit.getDefaultToolkit().getImage("data/fill_color.png"));
@@ -50,13 +56,53 @@ public class MainWindow extends JFrame {
 		case REDO:
 			History.get().redo();
 			break;
+		case OPEN:
+			if (this.fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+				this.lastFileName = this.fileChooser.getSelectedFile().toString();
+				this.loadStateFromFile(this.lastFileName);
+			}
+			break;
+		case SAVE:
+			if (this.lastFileName != null) {
+				this.saveCurrentState(this.lastFileName);
+				break;
+			}
+			// else - fall through (to SAVE_AS)
+		case SAVE_AS:
+			if (this.fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+				this.lastFileName = this.fileChooser.getSelectedFile().toString();
+				this.saveCurrentState(this.lastFileName);
+			}
+			break;
 		default:
 			JOptionPane.showMessageDialog(this, "Not implemented: " + id);
 			break;
 		}
 	}
 	
-	private void terminate() {
+	protected void loadStateFromFile(String fileName) {		
+		try {
+			Document doc = new Document(fileName);
+			History.get().parseDocument(doc);
+			this.lastFileName = fileName;
+		}
+		catch (IOException e) {
+			JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);			
+		}		
+	}
+	
+	protected void saveCurrentState(String fileName) {		
+		try {
+			Document doc = History.get().constructDocument();
+			doc.save(fileName);
+			this.lastFileName = fileName;
+		}
+		catch (IOException e) {
+			JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);			
+		}		
+	}
+	
+	protected void terminate() {
 		WindowEvent wev = new WindowEvent(this, WindowEvent.WINDOW_CLOSING);
         Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(wev);
 	}
