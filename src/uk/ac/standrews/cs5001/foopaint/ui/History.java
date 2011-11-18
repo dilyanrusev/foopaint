@@ -11,6 +11,7 @@ import uk.ac.standrews.cs5001.foopaint.ui.tools.ToolFactory;
 public class History {
 	private static History singleton;
 	
+	private boolean modified;
 	private Stack<Tool> itemsToDraw;	
 	private Stack<Tool> actions;
 	private Stack<Tool> undoneItems;
@@ -22,6 +23,7 @@ public class History {
 	}
 	
 	private History() {
+		this.modified = false;
 		this.disabled = false;
 		this.itemsToDraw = new Stack<Tool>();
 		this.undoneItems = new Stack<Tool>();
@@ -37,7 +39,11 @@ public class History {
 		this.historyChangedEvent.addObserver(listener);
 	}
 	
-	private void raiseHistoryChanged() {
+	public void removeHistoryChangedListener(Observer listener) {
+		this.historyChangedEvent.deleteObserver(listener);
+	}
+	
+	public void raiseHistoryChanged() {
 		if (!this.disabled) {
 			this.historyChangedEvent.raiseEvent(this.getItems());
 		}
@@ -47,28 +53,31 @@ public class History {
 		if (!this.disabled) {
 			this.itemsToDraw.add(tool);
 			this.actions.add(tool);
+			this.modified = true;
 			this.raiseHistoryChanged();
 		}
 	}
 	
 	public boolean undo() {
-		if (!this.disabled && !this.actions.empty()) {
+		if (this.canUndo()) {
 			Tool last = this.actions.pop();
 			if (!this.itemsToDraw.empty()) {
 				this.itemsToDraw.pop();
 			}
 			this.undoneItems.push(last);
+			this.modified = true;
 			this.raiseHistoryChanged();
 			return true;
 		}
 		return false;
 	}
-	
+
 	public boolean redo() {
-		if (!this.disabled && !this.undoneItems.empty()) {
+		if (this.canRedo()) {
 			Tool last = this.undoneItems.pop();
 			this.actions.push(last);
-			this.itemsToDraw.push(last);			
+			this.itemsToDraw.push(last);	
+			this.modified = true;
 			this.raiseHistoryChanged();
 			return true;
 		}
@@ -99,6 +108,7 @@ public class History {
 				this.itemsToDraw.add(tool);
 			}
 		}
+		this.modified = false;
 		this.raiseHistoryChanged();
 	}
 	
@@ -106,7 +116,20 @@ public class History {
 		this.actions.clear();
 		this.itemsToDraw.clear();
 		this.undoneItems.clear();
+		this.modified = true;
 		this.raiseHistoryChanged();
+	}
+	
+	public boolean hasItemsToDraw() {
+		return !this.itemsToDraw.empty();
+	}
+	
+	public boolean canUndo() {
+		return !this.disabled && !this.actions.empty();
+	}	
+	
+	public boolean canRedo() {
+		return !this.disabled && !this.undoneItems.empty();
 	}
 	
 	public boolean isDisabled() {
@@ -115,5 +138,13 @@ public class History {
 	
 	public void setDisabled(boolean disabled) {
 		this.disabled = disabled;
+	}
+	
+	public boolean isModified() {
+		return this.modified;
+	}
+	
+	public void setModified(boolean modified) {
+		this.modified = modified;
 	}
 }

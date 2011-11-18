@@ -21,10 +21,12 @@ public class MainWindow extends JFrame {
 	public MainWindow() {
 		this.setNativeLookAndFeel();
 		this.fileChooser = this.constructFileChooser();
-		this.buildLayout();		
-		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		this.buildLayout();
+		History.get().addHistoryChangedListener(new HistoryChangeHandler(this));
 		this.setTitle("Foo Paint");
 		this.setIconImage(Toolkit.getDefaultToolkit().getImage("data/fill_color.png"));
+		//this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.enableEvents(WindowEvent.WINDOW_CLOSING);
 	}
 	
 	protected void buildLayout() {
@@ -35,9 +37,10 @@ public class MainWindow extends JFrame {
 		
 		// wire events
 		tools.addToolChangeListener(drawing.getToolChangeHandler());	
-		menu.addActionChangedListener(new ActionChangeHandler(this));
+		menu.addActionChangedListener(new ActionChangeHandler(this));		
 		
 		// fire events for default values
+		History.get().raiseHistoryChanged();
 		tools.selectDefaultTool();
 			
 		// setup layout
@@ -79,10 +82,14 @@ public class MainWindow extends JFrame {
 		return chooser;
 	}
 	
+	public void onHistoryChanged() {
+		
+	}
+	
 	public void onActionChanged(ActionIDs id) {
 		switch (id) {
 		case EXIT:
-			this.terminate();
+			this.doFileExit();
 			break;
 		case UNDO:
 			History.get().undo();
@@ -90,27 +97,118 @@ public class MainWindow extends JFrame {
 		case REDO:
 			History.get().redo();
 			break;
+		case CREATE_NEW:
+			this.doFileNew();
+			break;
 		case OPEN:
-			if (this.fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-				this.lastFileName = this.fileChooser.getSelectedFile().toString();
-				this.loadStateFromFile(this.lastFileName);
-			}
+			this.doFileOpen();
 			break;
 		case SAVE:
-			if (this.lastFileName != null) {
-				this.saveCurrentState(this.lastFileName);
-				break;
-			}
-			// else - fall through (to SAVE_AS)
+			this.doFileSave();
+			break;
 		case SAVE_AS:
-			if (this.fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
-				this.lastFileName = this.fileChooser.getSelectedFile().toString();
-				this.saveCurrentState(this.lastFileName);
-			}
+			this.doFileSaveAs();
 			break;
 		default:
 			JOptionPane.showMessageDialog(this, "Not implemented: " + id);
 			break;
+		}
+	}
+	
+	@Override
+	protected void processWindowEvent(WindowEvent e) {
+		if (e.getID() == WindowEvent.WINDOW_CLOSING && History.get().isModified()) {
+			int answer = JOptionPane.showConfirmDialog(this, 
+					"Closing the application will discard your changes. Do you want to save first?",
+					"Save before quitting", JOptionPane.YES_NO_CANCEL_OPTION);
+			
+			switch (answer) {
+			case JOptionPane.YES_OPTION:
+				this.doFileSave();
+				System.exit(0);
+				break;
+			case JOptionPane.NO_OPTION:
+				System.exit(0);
+				return;
+			case JOptionPane.CANCEL_OPTION:
+				// do nothing
+				break;
+			}
+		}
+		else {
+			super.processWindowEvent(e);
+		}
+	}
+	
+	private void doFileExit() {
+		this.raiseWindowClosing();
+	}
+
+	private void doFileNew() {
+		boolean proceed = true;
+		if (History.get().isModified()) {
+			int answer = JOptionPane.showConfirmDialog(this, 
+					"Opening a new document will discard your changes. Do you want to save first?",
+					"Save", JOptionPane.YES_NO_CANCEL_OPTION);
+			
+			switch (answer) {
+			case JOptionPane.YES_OPTION:
+				this.doFileSave();
+				break;
+			case JOptionPane.NO_OPTION:
+				break;
+			case JOptionPane.CANCEL_OPTION:
+				proceed = false;
+				break;
+			}
+		}
+		
+		if (proceed) {
+			History.get().clear();
+			History.get().setModified(false);
+			this.lastFileName = null;
+		}
+	}
+
+	private void doFileOpen() {
+		boolean proceed = true;
+		if (History.get().isModified() && 
+				!this.askUser("Opening a new document will discard your changes. Continue?")) {
+			proceed = false;
+		}
+		if (proceed && this.fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+			this.lastFileName = this.fileChooser.getSelectedFile().toString();
+			this.loadStateFromFile(this.lastFileName);
+		}
+	}
+	
+	private void doFileSave() {
+		if (this.lastFileName != null) {
+			this.saveCurrentState(this.lastFileName);
+		}
+		else {
+			this.doFileSaveAs();
+		}
+	}
+	
+	private void doFileSaveAs() {
+		if (this.fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+			this.lastFileName = this.fileChooser.getSelectedFile().toString();
+			this.saveCurrentState(this.lastFileName);
+		}
+	}
+	
+	protected boolean askUser(String message) {
+		return this.askUser(message, "Drawing modified");
+	}
+	
+	protected boolean askUser(String message, String title) {
+		if (History.get().isModified()) {
+			int answer = JOptionPane.showConfirmDialog(this, message, title, JOptionPane.YES_NO_OPTION);
+			return JOptionPane.YES_OPTION == answer;
+		}
+		else {
+			return true;
 		}
 	}
 	
@@ -130,15 +228,29 @@ public class MainWindow extends JFrame {
 			Document doc = History.get().constructDocument();
 			doc.save(fileName);
 			this.lastFileName = fileName;
+			History.get().setModified(false);
 		}
 		catch (IOException e) {
 			JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);			
 		}		
 	}
 	
-	protected void terminate() {
+	protected void raiseWindowClosing() {
 		WindowEvent wev = new WindowEvent(this, WindowEvent.WINDOW_CLOSING);
         Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(wev);
+	}
+	
+	private static class HistoryChangeHandler implements Observer {
+		private MainWindow parent;
+		
+		public HistoryChangeHandler(MainWindow parent) {
+			this.parent = parent;
+		}
+		
+		@Override
+		public void update(Observable o, Object arg) {
+			this.parent.onHistoryChanged();
+		} 
 	}
 	
 	private static class ActionChangeHandler implements Observer {
