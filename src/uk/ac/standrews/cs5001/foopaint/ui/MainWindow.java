@@ -3,13 +3,13 @@ package uk.ac.standrews.cs5001.foopaint.ui;
 import java.awt.BorderLayout;
 import java.awt.Toolkit;
 import java.awt.event.WindowEvent;
-import java.io.File;
 import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
 
 import javax.swing.*;
-
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import uk.ac.standrews.cs5001.foopaint.data.Document;
 
 
@@ -19,7 +19,8 @@ public class MainWindow extends JFrame {
 	private String lastFileName;
 
 	public MainWindow() {
-		this.fileChooser = new JFileChooser(new File(System.getProperty("user.home")));
+		this.setNativeLookAndFeel();
+		this.fileChooser = this.constructFileChooser();
 		this.buildLayout();		
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setTitle("Foo Paint");
@@ -27,22 +28,55 @@ public class MainWindow extends JFrame {
 	}
 	
 	protected void buildLayout() {
-		this.getContentPane().setLayout(new BorderLayout());
-		
+		// create panels
 		MenuPanel menu = new MenuPanel();
 		ToolsPanel tools = new ToolsPanel();
 		DrawingPanel drawing = new DrawingPanel();
 		
+		// wire events
 		tools.addToolChangeListener(drawing.getToolChangeHandler());	
 		menu.addActionChangedListener(new ActionChangeHandler(this));
+		
+		// fire events for default values
+		tools.selectDefaultTool();
 			
+		// setup layout
+		this.getContentPane().setLayout(new BorderLayout());
+		
 		this.getContentPane().add(menu, BorderLayout.NORTH);
 		this.getContentPane().add(tools, BorderLayout.WEST);
 		this.getContentPane().add(drawing, BorderLayout.CENTER);
 		
+		// place, size and view
 		this.pack();
 		this.setLocationRelativeTo(null);
 		this.setVisible(true);
+	}
+	
+	private void setNativeLookAndFeel() {
+		String lookAndFeelName = UIManager.getSystemLookAndFeelClassName();
+		try {
+			UIManager.setLookAndFeel(lookAndFeelName);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (UnsupportedLookAndFeelException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private JFileChooser constructFileChooser() {
+		JFileChooser chooser = new JFileChooser(System.getProperty("user.home"));
+		
+		FileFilter fooFilter = new FileNameExtensionFilter("Foo Paint drawings (*.foo)", "foo");
+		
+		chooser.addChoosableFileFilter(fooFilter);
+		chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		
+		return chooser;
 	}
 	
 	public void onActionChanged(ActionIDs id) {

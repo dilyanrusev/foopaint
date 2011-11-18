@@ -81,6 +81,7 @@ public class ToolFactory {
 			Tool tool = getToolByModelType(drawable.getClass());
 			if (tool != null) {
 				tool.update(drawable);
+				return tool;
 			}
 		}
 		return null;

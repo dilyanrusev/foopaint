@@ -37,6 +37,10 @@ public class ToolsPanel extends JToolBar implements ActionListener {
 		this.add(controls);
 	}
 	
+	public void selectDefaultTool() {
+		this.toolChagedEvent.raiseEvent(ToolIDs.DRAW_LINE);
+	}
+	
 	protected JButton createButton(ToolOptions forOption) {
 		return new ToolbarItem(forOption.getPath(), forOption.getText());
 	}
