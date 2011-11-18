@@ -31,6 +31,10 @@ class LineTool implements Tool {
 		Line another = (Line) drawable;
 		this.data = new Line(another);
 	}
+	@Override
+	public void update(Object toolSpecificData) {
+		// do nothing
+	}
 
 	@Override
 	public void render(Graphics grfx) {

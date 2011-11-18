@@ -7,7 +7,7 @@ import java.io.Serializable;
  * @author <110017972>
  *
  */
-public class ExternalResource extends DrawableItem implements Serializable {
+public abstract class ExternalResource extends DrawableItem implements Serializable {
 	/** Increased when new fields are added */
 	private static final long serialVersionUID = 2L;
 	

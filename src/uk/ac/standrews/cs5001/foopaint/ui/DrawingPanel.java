@@ -7,12 +7,16 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.geom.Point2D;
+import java.io.File;
 import java.util.Observable;
 import java.util.Observer;
 
 import javax.swing.JColorChooser;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import uk.ac.standrews.cs5001.foopaint.ui.tools.Tool;
 import uk.ac.standrews.cs5001.foopaint.ui.tools.ToolFactory;
@@ -27,6 +31,7 @@ public class DrawingPanel extends JPanel {
 	private Point2D end;
 	private Color colour;
 	private boolean dragging;
+	private JFileChooser fileChooser;
 	
 	public DrawingPanel() {
 		this.toolChangeHandler = new ToolChangeHandler(this);		
@@ -44,8 +49,20 @@ public class DrawingPanel extends JPanel {
 		this.colour = Color.BLACK;
 		this.dragging = false;
 		this.currentTool = null;
+		this.fileChooser = this.constructFileChooser();
 		
 		History.get().addHistoryChangedListener(new HistoryChangedHandler(this));
+	}
+	
+	private JFileChooser constructFileChooser() {
+		JFileChooser chooser = new JFileChooser(System.getProperty("user.home"));
+		
+		FileFilter fooFilter = new FileNameExtensionFilter("Supported image files (*.gif, *.jpeg and *.png)", "gif", "jpeng", "jpg", "png");
+		
+		chooser.addChoosableFileFilter(fooFilter);
+		chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		
+		return chooser;
 	}
 	
 	public Observer getToolChangeHandler() {
@@ -88,6 +105,10 @@ public class DrawingPanel extends JPanel {
 		this.dragging = true;
 		this.start = origin;;
 		this.end = origin;
+		if (this.currentTool != null) {
+			this.currentTool.update(start, end, this.colour);
+			this.repaint();
+		}
 	}
 	
 	private void dragTo(Point2D newEnd) {
@@ -131,7 +152,13 @@ public class DrawingPanel extends JPanel {
 		case PICK_COLOUR:
 			this.colour = JColorChooser.showDialog(this, "Pick a colour", this.colour);
 			break;
-		case DRAW_IMPORTED_IMAGE:		
+		case DRAW_IMPORTED_IMAGE:
+			if (this.fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+				File imgFile = this.fileChooser.getSelectedFile();
+				this.currentTool = ToolFactory.getToolByID(newTool);
+				this.currentTool.update(new Object[] {imgFile, this});
+			}
+			break;
 		case SELECT_OBJECT:
 			JOptionPane.showMessageDialog(this, "Not implemented: " + newTool);
 			break;

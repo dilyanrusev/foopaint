@@ -27,6 +27,12 @@ public interface Tool {
 	void update(DrawableItem drawable);
 	
 	/**
+	 * Update the internal state of the tool with tool-specific data (e.g. path to a file)
+	 * @param toolSpecificData
+	 */
+	void update(Object toolSpecificData);
+	
+	/**
 	 * Draw the shape represented by this tool
 	 * @param grfx Graphics context to use for rendering
 	 */

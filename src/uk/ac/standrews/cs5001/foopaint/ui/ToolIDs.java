@@ -1,5 +1,6 @@
 package uk.ac.standrews.cs5001.foopaint.ui;
 
+import uk.ac.standrews.cs5001.foopaint.data.ImageData;
 import uk.ac.standrews.cs5001.foopaint.data.Rectangle;
 import uk.ac.standrews.cs5001.foopaint.data.Ellipse;
 import uk.ac.standrews.cs5001.foopaint.data.Line;
@@ -12,7 +13,7 @@ public enum ToolIDs {
 	DRAW_RECTANGLE (Rectangle.class, false),
 	DRAW_SOLID_RECTANGLE (Rectangle.class, true),
 	DRAW_LINE (Line.class, true),
-	DRAW_IMPORTED_IMAGE (null, true)
+	DRAW_IMPORTED_IMAGE (ImageData.class, true)
 	;
 	
 	ToolIDs(Class<?> modelType, boolean isSolid) {

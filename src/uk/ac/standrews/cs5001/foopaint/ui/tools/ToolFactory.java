@@ -30,6 +30,7 @@ public class ToolFactory {
 		register(ToolIDs.DRAW_SOLID_RECTANGLE, SolidRectangleTool.class);
 		register(ToolIDs.DRAW_ELLIPSE, EllipseTool.class);
 		register(ToolIDs.DRAW_SOLID_ELLIPSE, SolidEllipseTool.class);
+		register(ToolIDs.DRAW_IMPORTED_IMAGE, ImageTool.class);
 	}
 	
 	/** Register a tool implementation */

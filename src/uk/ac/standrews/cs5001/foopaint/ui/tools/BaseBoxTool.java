@@ -27,6 +27,11 @@ abstract class BaseBoxTool<TData> implements Tool {
 	}
 	
 	@Override
+	public void update(Object toolSpecificData) {
+		// by default, do nothing
+	}
+	
+	@Override
 	public void update(Point2D start, Point2D end, Color color) {
 		/*
 		 * These calculations are necessary, because the Graphics object
