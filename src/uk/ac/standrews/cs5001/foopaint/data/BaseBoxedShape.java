@@ -8,7 +8,7 @@ package uk.ac.standrews.cs5001.foopaint.data;
  * @author <110017972>
  *
  */
-public abstract class BaseBoxedShape extends VectorShape {
+public abstract class BaseBoxedShape extends VectorShape implements BoxedShape {
 	/** To be incremented whenever more non-transient fields are added */
 	private static final long serialVersionUID = 1L;
 	
@@ -47,66 +47,66 @@ public abstract class BaseBoxedShape extends VectorShape {
 		this.height = other.height;
 	}
 	
-	/**
-	 * Set the left positional coordinate component
-	 * @param x Left
+	/* (non-Javadoc)
+	 * @see uk.ac.standrews.cs5001.foopaint.data.BoxedShape#setX(int)
 	 */
+	@Override
 	public void setX(int x) {
 		this.x = x;
 	}
 	
-	/**
-	 * Get the left positional coordinate component
-	 * @return Left
+	/* (non-Javadoc)
+	 * @see uk.ac.standrews.cs5001.foopaint.data.BoxedShape#getX()
 	 */
+	@Override
 	public int getX() {
 		return this.x;
 	}
 	
-	/**
-	 * Set the top positional coordinate component
-	 * @param y Top
+	/* (non-Javadoc)
+	 * @see uk.ac.standrews.cs5001.foopaint.data.BoxedShape#setY(int)
 	 */
+	@Override
 	public void setY(int y) {
 		this.y = y;
 	}
 	
-	/**
-	 * Get the top positional coordinate component
-	 * @return Top
+	/* (non-Javadoc)
+	 * @see uk.ac.standrews.cs5001.foopaint.data.BoxedShape#getY()
 	 */
+	@Override
 	public int getY() {
 		return this.y;
 	}
 	
-	/**
-	 * Set shape width
-	 * @param width Shape width
+	/* (non-Javadoc)
+	 * @see uk.ac.standrews.cs5001.foopaint.data.BoxedShape#setWidth(int)
 	 */
+	@Override
 	public void setWidth(int width) {
 		this.width = width;
 	}
 	
-	/**
-	 * Get shape width
-	 * @return Shape width
+	/* (non-Javadoc)
+	 * @see uk.ac.standrews.cs5001.foopaint.data.BoxedShape#getWidth()
 	 */
+	@Override
 	public int getWidth() {
 		return this.width;
 	}
 	
-	/**
-	 * Set shape height
-	 * @param height Shape height
+	/* (non-Javadoc)
+	 * @see uk.ac.standrews.cs5001.foopaint.data.BoxedShape#setHeight(int)
 	 */
+	@Override
 	public void setHeight(int height) {
 		this.height = height;
 	}
 	
-	/**
-	 * Get shape height
-	 * @return Shape height
+	/* (non-Javadoc)
+	 * @see uk.ac.standrews.cs5001.foopaint.data.BoxedShape#getHeight()
 	 */
+	@Override
 	public int getHeight() {
 		return this.height;
 	}
