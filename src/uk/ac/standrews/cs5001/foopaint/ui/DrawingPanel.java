@@ -57,9 +57,14 @@ public class DrawingPanel extends JPanel {
 		super.processMouseEvent(e);
 				
 		if (e.getID() == MouseEvent.MOUSE_PRESSED) {
-			this.startDragging(e.getPoint());
+			if (this.currentTool != null) {
+				this.startDragging(e.getPoint());
+			}			
+			else {
+				JOptionPane.showMessageDialog(this,	"Please, select a tool first (Toolbox is to the left)");
+			}
 		}
-		else if (e.getID() == MouseEvent.MOUSE_RELEASED) {			
+		else if (e.getID() == MouseEvent.MOUSE_RELEASED && this.dragging) {			
 			this.stopDragging(e.getPoint());			
 		}
 	}

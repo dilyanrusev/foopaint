@@ -22,13 +22,19 @@ public class ToolsPanel extends JToolBar implements ActionListener {
 	
 	protected void buildLayout() {
 		this.setFloatable(false);
-		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		
+		JPanel controls = new JPanel();
+		controls.setLayout(new BoxLayout(controls, BoxLayout.Y_AXIS));
+		
+		controls.add(new JLabel("Toolbox"));
 		for (ToolOptions option: ToolOptions.values()) {
 			JButton button = this.createButton(option);
 			button.setActionCommand(Integer.toString(option.getID().ordinal()));
 			button.addActionListener(this);
-			this.add(button);
+			controls.add(button);
 		}
+		
+		this.add(controls);
 	}
 	
 	protected JButton createButton(ToolOptions forOption) {
