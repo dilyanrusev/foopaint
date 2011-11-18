@@ -6,12 +6,21 @@ import java.util.Map;
 import uk.ac.standrews.cs5001.foopaint.data.DrawableItem;
 import uk.ac.standrews.cs5001.foopaint.ui.ToolIDs;
 
+/**
+ * Factory for obtaining Tool-s
+ * @author <110017972>
+ *
+ */
 public class ToolFactory {
+	/** Stores Tool implementations identified by ID */
 	private static Map<ToolIDs, Class<?>> tools;
+	/** Stores IDs identified by Model.Class */
 	private static Map<Class<?>, ToolIDs> modelToolMap;
 	
+	/** Should not be instantiated in the outside world */
 	private ToolFactory() {}
 	
+	/** Fill-up the containers */
 	static {
 		tools = new Hashtable<ToolIDs, Class<?>>();
 		modelToolMap = new Hashtable<Class<?>, ToolIDs>();
@@ -23,6 +32,7 @@ public class ToolFactory {
 		register(ToolIDs.DRAW_SOLID_ELLIPSE, SolidEllipseTool.class);
 	}
 	
+	/** Register a tool implementation */
 	public static void register(ToolIDs id, Class<?> tool) {
 		tools.put(id, tool);
 		if (id.getModelType() != null) {
@@ -30,6 +40,11 @@ public class ToolFactory {
 		}
 	}
 	
+	/** 
+	 * Resolve a specific Tool implementation by ID
+	 * @param id Required UI functionality identification
+	 * @return Tool implementation or null
+	 */
 	public static Tool getToolByID(ToolIDs id) {
 		if (id != null) {
 			Class<?> type = tools.get(id);
@@ -41,6 +56,11 @@ public class ToolFactory {
 		return null;
 	}
 	
+	/**
+	 * Resolve a specific Tool implementation that can draw a particular Model
+	 * @param modelType Model.Class
+	 * @return Matching Tool implementation or null
+	 */
 	public static Tool getToolByModelType(Class<?> modelType) {
 		if (modelType != null) {
 			ToolIDs toolID = modelToolMap.get(modelType);
@@ -51,6 +71,11 @@ public class ToolFactory {
 		return null;
 	}
 	
+	/**
+	 * Resolve and update a Tool implementation that can draw a particular Model
+	 * @param drawable Instance of a shape that needs to be drawn
+	 * @return Instance of a matching tool implementation that is initialised by the Model, or null
+	 */
 	public static Tool getToolByModel(DrawableItem drawable) {
 		if (drawable != null) {
 			Tool tool = getToolByModelType(drawable.getClass());
@@ -61,6 +86,11 @@ public class ToolFactory {
 		return null;
 	}
 	
+	/**
+	 * Create a new instance of a tool by its Class
+	 * @param type Tool.Class
+	 * @return Instance of the class, or null on error
+	 */
 	private static Tool getToolByType(Class<?> type) {
 		if (type != null) {
 			try {
