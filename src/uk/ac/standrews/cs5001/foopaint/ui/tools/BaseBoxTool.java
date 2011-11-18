@@ -27,7 +27,7 @@ abstract class BaseBoxTool<TData> implements Tool {
 	}
 	
 	@Override
-	public void update(Object toolSpecificData) {
+	public void initialize(Object toolSpecificData) {
 		// by default, do nothing
 	}
 	
@@ -134,4 +134,4 @@ abstract class BaseBoxTool<TData> implements Tool {
 	protected void setData(TData data) {
 		this.data = data;
 	}
-}
+} 

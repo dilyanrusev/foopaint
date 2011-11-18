@@ -32,7 +32,7 @@ class LineTool implements Tool {
 		this.data = new Line(another);
 	}
 	@Override
-	public void update(Object toolSpecificData) {
+	public void initialize(Object toolSpecificData) {
 		// do nothing
 	}
 

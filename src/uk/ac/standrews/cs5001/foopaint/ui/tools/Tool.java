@@ -13,6 +13,12 @@ import uk.ac.standrews.cs5001.foopaint.data.DrawableItem;
  */
 public interface Tool {
 	/**
+	 * Initialize the internal state of the tool with tool-specific data (e.g. path to a file)
+	 * @param toolSpecificData Data that is specific to the tool
+	 */
+	void initialize(Object toolSpecificData);
+	
+	/**
 	 * Update the internal state of the tool with data gathered by the UI
 	 * @param start First (start, origin) point
 	 * @param end Second (end) point
@@ -25,12 +31,6 @@ public interface Tool {
 	 * @param drawable Data required for drawing the shape
 	 */
 	void update(DrawableItem drawable);
-	
-	/**
-	 * Update the internal state of the tool with tool-specific data (e.g. path to a file)
-	 * @param toolSpecificData
-	 */
-	void update(Object toolSpecificData);
 	
 	/**
 	 * Draw the shape represented by this tool
