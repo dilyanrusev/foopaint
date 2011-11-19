@@ -16,12 +16,13 @@ import uk.ac.standrews.cs5001.foopaint.data.ImageData;
  * @author <110017972>
  *
  */
-public class ImageTool implements Tool {
+class ImageTool implements Tool {
 	/** serializable data */
 	private ImageData data;
 	/** actual binary image to draw */
 	private Image image;
 	private ImageObserver imageObserver;
+	//private BoxSelectionHelper selectionImpl;
 
 	/**
 	 * Create a new tool
@@ -30,6 +31,7 @@ public class ImageTool implements Tool {
 		this.data = new ImageData();
 		this.image = null;
 		this.imageObserver = null;
+		//this.selectionImpl = new BoxSelectionHelper();
 	}
 	
 	/**
@@ -41,6 +43,7 @@ public class ImageTool implements Tool {
 		// binary data is shared
 		this.image = other.image;
 		this.imageObserver = other.imageObserver;
+		//this.selectionImpl = new BoxSelectionHelper();
 	}
 	
 	@Override
@@ -118,5 +121,15 @@ public class ImageTool implements Tool {
 	public Tool copy() {
 		return new ImageTool(this);
 	}
+
+//	@Override
+//	public boolean select(Point2D point) {
+//		return this.selectionImpl.select(this, box)
+//	}
+//
+//	@Override
+//	public void moveTo(Point2D point) {
+//		// TODO Auto-generated method stub		
+//	}
 	
 }

@@ -18,12 +18,8 @@ abstract class BaseBoxTool<TData> implements SelectableTool {
 	private TData data;
 	/** True if the shape is filled with colour, false if only a contour is drawn instead */
 	private boolean solid;
-	/** Point where the mouse was when movement started */
-	private Point2D moveOrigin;
-	/** Initial top-left when movement started */
-	private int xShapeOrigin;
-	/** Initial top-left when movement started */
-	private int yShapeOrigin;
+	/** Helps abstract implementation for tools that do not inherit BaseBoxTool */
+	private BoxSelectionHelper selectionImpl;
 	
 	/**
 	 * Create a new tool
@@ -31,6 +27,7 @@ abstract class BaseBoxTool<TData> implements SelectableTool {
 	 */
 	public BaseBoxTool(boolean solid) {
 		this.solid = solid;
+		this.selectionImpl = new BoxSelectionHelper();
 	}
 	
 	@Override
@@ -121,24 +118,7 @@ abstract class BaseBoxTool<TData> implements SelectableTool {
 		DrawableItem shape = this.getItem();
 		if (shape instanceof BoxedShape) {
 			BoxedShape box = (BoxedShape) shape;
-			int x = box.getX();
-			int y = box.getY();
-			int w = box.getWidth();
-			int h = box.getHeight();
-			
-			// m stands for mouse
-			int mx = (int) point.getX();
-			int my = (int) point.getY();
-			
-			boolean within = mx >= x && mx <= x + w && my >= y && my <= y + h;
-			
-			if (within) {
-				this.moveOrigin = point;
-				this.xShapeOrigin = box.getX();
-				this.yShapeOrigin = box.getY();
-			}
-			
-			return within;
+			return this.selectionImpl.select(point, box);
 		}
 		else {
 			return false;
@@ -150,11 +130,7 @@ abstract class BaseBoxTool<TData> implements SelectableTool {
 		DrawableItem shape = this.getItem();
 		if (shape instanceof BoxedShape) {
 			BoxedShape box = (BoxedShape) shape;
-			int dx = (int) (point.getX() - this.moveOrigin.getX());
-			int dy = (int) (point.getY() - this.moveOrigin.getY());
-			
-			box.setX(this.xShapeOrigin + dx);
-			box.setY(this.yShapeOrigin + dy);
+			this.selectionImpl.moveTo(point, box);
 		}		
 	}
 
@@ -183,8 +159,4 @@ abstract class BaseBoxTool<TData> implements SelectableTool {
 	protected void setData(TData data) {
 		this.data = data;
 	}
-} 
-
-class BoxSelectionHelper {
-	BoxedShape shape;
 }
